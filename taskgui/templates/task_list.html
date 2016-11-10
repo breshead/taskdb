@@ -1,0 +1,77 @@
+<h1>Task List</h1>
+
+ 
+    <!-- Form to select which task data will show in the list -->
+    <form action="tasks" method="get">
+
+        <!-- USER combobox list -->
+        <select onchange="this.form.submit()" name="User">
+        <option value="0" {% if user_filter == "0" %}  selected {% endif %}> All </option>
+        {% for u in view.users %}
+        <option value="{{ u.id }}" {% if user_filter == u.id|stringformat:"s" %} selected {% endif %}> {{ u.username }} </option>
+        {% endfor %}
+        </select>
+
+
+
+        <!-- TYPE combobox list -->
+        <select onchange="this.form.submit()"  name="Type">
+        <option value="0" {% if status_filter == "0" %}  selected {% endif %}> All </option>
+        {% for t in view.types %}
+        <option value="{{ t.id }}" {% if type_filter == t.id|stringformat:"s" %} selected {% endif %}> {{ t.name }} </option>
+        {% endfor %}
+        </select>
+
+
+
+        <!-- STATUS combobox list -->
+        <select onchange="this.form.submit()"  name="Status">
+        <option value="0" {% if status_filter == "0" %}  selected {% endif %}> All </option>
+        <option value="A" {% if status_filter == "A" %}  selected {% endif %}> Not Complete </option>
+        {% for s in view.statii %}
+        <option value="{{ s.id }}" {% if status_filter == s.id|stringformat:"s" %} selected {% endif %}> {{ s.name }} </option>
+        {% endfor %}
+        </select>
+
+
+        <!-- PRIORITY combobox list -->
+        <select onchange="this.form.submit()"  name="Priority">
+        <option value="0" {% if pri_filter == "0" %}  selected {% endif %}> All </option>
+        {% for p in pri_list %}
+        <option value="{{ p }}" {% if pri_filter == p|stringformat:"s" %} selected {% endif %}> {{ p }} </option>
+        {% endfor %}
+        </select>
+
+
+
+        <!--<input type="submit" value="Submit">-->
+        <button type="submit" formaction="/taskgui/search" method="get">ElasticSearch</button>
+        <button type="submit" formaction="/taskgui/task/new" method="get">New Task</button>
+    
+    </form>
+
+
+    <table>
+      <tr>
+          <td>ID</td>
+          <td>Name</td>
+          <td>Status</td>
+          <td>Priority</td>
+      </tr>  
+    {% for task in task_list %}
+      <tr>
+          <td><a href="/taskgui/task/{{ task.id }}">{{ task.id }}</a></td>
+          <td>{{ task.name }}</td>
+          <!--<td>{{ task.parent }}</td>-->
+          <!--<td>{{ task.context }}</td>
+          <td>{{ task.owner }}</td>
+          <td>{{ task.ttype }}</td>
+          <td>{{ task.created }}</td>
+          <!--<td>{{ task.due }}</td>
+          <!--<td>{{ task.completed }}</td>
+          <!--<td>{{ task.storage }}</td>-->
+          <td>{{ task.status }}</td>
+          <td style="padding-left: 20px">{{ task.priority }}</td>
+      </tr>
+    {% endfor %}
+    </table>

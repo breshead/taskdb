@@ -1,0 +1,128 @@
+<head>
+    <style>
+
+        .task-done {
+            text-decoration: line-through;
+        }
+
+   	    .note-title {
+	        //font-style: italic;
+	        //font-weight: bold;
+	        background-color: lightblue;
+	    }
+	    .snote-title {
+	        font-weight: bold;
+	        font-size: 75%;
+	    }
+	    .snote-textra {
+	        font-style: italic;
+	        font-size: 60%;
+	    }
+	    .sh3 {
+	        font-weight: bold;
+	        font-size: 1.2em;
+	    }
+        .comment-link {
+             overflow:hidden; 
+             white-space:nowrap;
+	        font-size: 60%;
+        }
+
+        p {
+            margin: 3px;
+        }
+
+        .note-text {
+	        font-size: 90%;
+        }
+
+
+
+    </style>
+</head>
+
+{% load markdown_deux_tags %}
+{% load sub_notes %}
+
+
+<h1>{{ task.name }}</h1>
+
+<a href="/taskgui/tasks">Task List</a>
+-- <a href="/taskgui/task_edit/{{ task.id }}">Edit Task</a>
+-- <a href="/taskgui/task/new_child/{{ task.id }}">Add Sub Task</a>
+-- <a href="/taskgui/note/new/{{ task.id }}">Add Note</a>
+-- <a href="/taskgui/task/complete/{{ task.id }}">Complete Task</a>
+
+<br><br>
+<span class='sh3'>Metadata</span>
+<!--
+<a href="/taskgui/task_edit/{{ task.id }}">EDIT</a> /
+<a href="/taskgui/task/new_child/{{ task.id }}">New Sub Task</a>
+</span>
+-->
+
+<br><br>
+Status: {{ task.status }}
+<br>
+Owner : {{ task.owner }}
+<br>
+Requested By: {{ task.requested_by }}
+<br>
+Type  : {{ task.ttype }}
+<br>
+Priority : {{ task.priority }}
+<br>
+Created  : {{ task.created }}
+<br>
+Due      : {{ task.due }}
+<br>
+Parent   : <a href="/taskgui/task/{{ task.parent_id }}">{{ task.parent }}</a>
+
+<h3>Sub Tasks</h3>
+<div class='subtasks'>
+    <ul style="list-style-type:circle">
+        {% for sTask in subtasks %}
+        <!-- <li><a href="/taskgui/task/{{ sTask.id }}">{{ sTask.name }}</a></li>-->
+        <li 
+        {% if sTask.status|stringformat:"s" == "Completed" %}
+        class="task-done"
+        {% endif %}
+        ><a href="/taskgui/task/{{ sTask.id }}">{{ sTask.name }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+
+
+<h3>Overview</h3>
+<div class='overview'>
+{% markdown %} {{ task.overview }} {% endmarkdown %}
+</div>
+<span class='sh3'>Notes</span>
+<span style='font-size: 70%'><a href="/taskgui/note/new/{{ task.id }}">New Note</a></span>
+<br>
+<br>
+<div class='notes'>
+      {% for note in notes %}
+      <div class='note'>
+          <div class='note-title'>
+           <span class='snote-title'>{{ note.title }} : </span>
+           <span class='snote-textra'>({{ note.user }}) ({{ note.stamp}}) 
+           <a href="/taskgui/note/{{ note.id }}">EDIT</a></span>
+          </div>
+         
+          <div class='note-text'>
+          {% markdown %}  {{ note.text }}  {% endmarkdown %}
+          </div>
+          <div class='note-comment'>
+          </div>
+
+          <div class='comment-link'>
+              <a href="/taskgui/note/comment/{{ note.id }}">Comment</a>
+             <!-- <hr style='display:inline-block; width:100%; vertical-align:middle;'> -->
+          </div>
+
+      </div>
+      {% sub_notes note.id 1 %} 
+      
+      {% endfor %}
+</div>

@@ -1,0 +1,181 @@
+<head>
+    <style>
+        label{
+            display: inline-block;
+            xfloat: left; /* causes issues */
+            clear: left;
+            width: 5em;
+            text-align: right;
+        }
+        noinput {
+          display: inline-block;
+          float: left;
+        }
+        textarea {
+            vertical-align: top;
+        }
+    </style>
+</head>
+<!--
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Update" />
+</form>
+-->
+
+
+
+<h2>{{ taskname }}</h1>
+
+<form action="" method="post">{% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <!-- Parent Task this note belongs to. -->
+    {% if form.parent.value != None %}
+    <div class="fieldWrapper">
+        {{ form.parent.errors }}
+        <label for="id_parent">Parent:</label> 
+        <input id="id_parent" name="parent" type="hidden" 
+            value="{{ form.parent.value }}" />
+        <a href="/taskgui/task/{{ form.parent.value }}"
+            >{{ parentname }}</a>
+    </div>
+    {% endif %}
+
+
+    <!-- Context -->
+    <div class="fieldWrapper">
+        {{ form.context.errors }}
+        <label for="id_context">Context:</label> 
+        {{ form.context }}
+    </div>
+
+    <!-- Owner -->
+    <div class="fieldWrapper">
+        {{ form.owner.errors }}
+        <label for="id_owner">Owner:</label> 
+        {{ form.owner }}
+    </div>
+
+    <!-- Requested By -->
+    <div class="fieldWrapper">
+        {{ form.requested_by.errors }}
+        <label for="id_requested_by">Requested By:</label> 
+        {{ form.requested_by}}
+    </div>
+
+
+    <!-- Type -->
+    <div class="fieldWrapper">
+        {{ form.ttype.errors }}
+        <label for="id_ttype">Type:</label> 
+        {{ form.ttype }}
+    </div>
+
+
+    <!-- Role -->
+    <div class="fieldWrapper">
+        {{ form.role.errors }}
+        <label for="id_role">Role:</label> 
+        {{ form.role }}
+    </div>
+
+
+    <!-- Name -->
+    <div class="fieldWrapper">
+        {{ form.name.errors }}
+        <label for="id_name">Name:</label> 
+        <input id="id_name" size=50 maxlength="100" name="name" type="text" value="{{ form.name.value }}" />
+    </div>
+
+
+
+    <!-- Created -->
+    <div class="fieldWrapper">
+        {{ form.created.errors }}
+        <label for="id_created">Created:</label> 
+        <input id="id_created" size=50 maxlength="100" name="created" type="text" value="{{ form.created.value }}" />
+    </div>
+
+
+    <!-- Due -->
+    <div class="fieldWrapper">
+        {{ form.due.errors }}
+        <label for="id_due">Due:</label> 
+        <input id="id_due" size=50 maxlength="100" name="due" type="text" value="{{ form.due.value }}" />
+    </div>
+
+
+    <!-- Completed -->
+    <div class="fieldWrapper">
+        {{ form.completed.errors }}
+        <label for="id_completed">Completed:</label> 
+        <input id="id_completed" size=50 maxlength="100" name="completed" type="text" 
+        {% if form.completed.value == None %}
+        value="" />
+        {% else %}
+        value="{{ form.completed.value }}" />
+        {% endif %}
+    </div>
+
+
+
+    <!-- Overview -->
+    <div class="fieldWrapper">
+        {{ form.overview.errors }}
+        <label for="id_overview">Overview:</label> 
+        <textarea cols="80" id="id_overview" name="overview" rows="20"
+            >{{ form.overview.value }}</textarea>
+
+    </div>
+
+
+
+
+
+   <!-- Progress -->
+   <div class="fieldWrapper">
+        {{ form.progress.errors }}
+        <label for="id_progress">Progress:</label> 
+        <input id="id_progress" size=50 maxlength="100" name="progress"
+            type="number" value="{{ form.progress.value }}" />
+    </div>
+
+
+
+
+    <!-- Status -->
+    <div class="fieldWrapper">
+        {{ form.status.errors }}
+        <label for="id_status">Status:</label> 
+        {{ form.status }}
+    </div>
+
+
+
+    <!-- Storage -->
+    <div class="fieldWrapper">
+        {{ form.storage.errors }}
+        <label for="id_storage">Storage:</label> 
+        <input id="id_storage" size=50 maxlength="100" storage="storage" type="text" value="{{ form.storage.value }}" />
+    </div>
+
+
+
+    <!-- Priority -->
+   <div class="fieldWrapper">
+        {{ form.priority.errors }}
+        <label for="id_priority">Priority:</label> 
+        <input id="id_priority" size=50 maxlength="100"
+            name="priority" type="number" value="{{ form.priority.value }}" />
+    </div>
+
+
+
+    <input type="submit" value="Update" />
+    <button type="submit" formaction="/taskgui/task/delete/{{ task.id }}" method="get">Delete</button>
+        
+</form>
+
+
+

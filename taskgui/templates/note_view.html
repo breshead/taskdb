@@ -1,0 +1,24 @@
+<div class='notes'>
+      {% load markdown_deux_tags %}
+      {% load sub_notes %}
+      {% for note in notes %}
+      <div class='note' style="margin-left:{{ indentpx }}px;">
+          <div class='note-title'>
+           <span class='snote-title'>{{ note.title }} : </span>
+           <span class='snote-textra'>({{ note.user }}) ({{ note.stamp}}) 
+           <a href="/taskgui/note/{{ note.id }}">EDIT</a></span>
+          </div>
+         
+          <div class='note-text'> 
+              {% markdown %}  {{ note.text }}  {% endmarkdown %} 
+          </div>
+          <div class='comment-link'>
+              <a href="/taskgui/note/comment/{{ note.id }}">Comment</a>
+             <!-- <hr style='display:inline-block; width:100%; vertical-align:middle;'> -->
+
+          </div>
+
+      </div>
+      {% sub_notes note.id indent %} 
+      {% endfor %}
+</div>

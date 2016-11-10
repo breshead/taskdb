@@ -1,0 +1,4 @@
+*.pyc
+*.sqlite3
+*.swp
+src/task/taskgui/static

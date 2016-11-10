@@ -1,0 +1,111 @@
+<head>
+{% load static %}
+<script src="{% static "taskgui/simplemde.min.js" %}"></script>
+    <style>
+    .CodeMirror, .CodeMirror-scroll {
+        min-height: 10px;
+    }
+    </style>
+</head>
+<!--
+Old form
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Update" />
+</form>
+-->
+
+
+
+
+<!-- 
+    Use form.<field>.value to just show the raw value and not to do
+    anything special with it.  We can then put these in a hidden input
+    field to make sure that they make it back to the view code but don't
+    mess with our actual view.
+-->
+
+<form action="" method="post">{% csrf_token %}
+
+    {{ form.non_field_errors }}
+
+    <!-- Parent Task this note belongs to. -->
+        <div class="fieldWrapper">
+        {{ form.task.errors }}
+        <label for="{{ form.task.id_for_label }}">Task: </label>  
+          <input id="id_task" name="task" type="hidden" value="{{ form.task.value }}" />
+          <a href="/taskgui/task/{{ note.task_id }}">{{ taskname }}</a>
+    </div>
+    
+    <!-- Parent Note this note belongs to. -->
+       {% if form.parent.value != None %}
+   
+        <div class="fieldWrapper">
+        {{ form.parent.errors }}
+        <label for="{{ form.parent.id_for_label }}">Parent: </label>  
+          <input id="id_parent" name="parent" type="hidden" value="{{ form.parent.value }}" />
+          <a href="/taskgui/note/{{ note.parent_id }}">{{ note.parent.title }}</a>
+        </div>
+        {% endif %}
+
+
+    <!-- TimeStamp -->
+    <div class="fieldWrapper">
+        {{ form.stamp.errors }}
+        <label for="id_stamp">Stamp:</label> 
+        <input id="id_stamp" name="stamp" type="text" value="{{ note.stamp }}" />
+    </div>
+
+    <!-- User -->
+    <div class="fieldWrapper">
+        {{ form.user.errors }}
+        <label for="id_user">User: {{ username }}</label> 
+        <input id="id_user" name="user" type="hidden" value="{{ form.user.value }}" />
+    </div>
+
+    <!-- Title of the note -->
+    <div class="fieldWrapper" autofocus>
+        {{ form.title.errors }}
+        <label for="id_title">Title:</label> 
+        <input id="id_title" maxlength="90" name="title" type="text"
+        size="50" value="{{ note.title }}" />
+    </div>
+
+    
+    <!-- Text of the note 
+        The 300px is the minimum we can go for some reason. Making it less
+        only causes the buttons below to get hidden as the css height uses
+        this height as a reference.
+    -->
+    <div class="fieldWrapper">
+        {{ form.text.errors }}
+        <label for="id_text">Text:</label> 
+        <div style='height:300px;width:50%'>
+            <textarea style="vertical-align: top" id="id_text" name="text" 
+            >{{ note.text }}</textarea>
+        </div>
+    </div>
+
+    <!-- Update Button 
+        Div and Span are necessary to get the buttons below the simplemde
+        editor. Otherwise it was always just 100px underneath the bottom.
+    -->
+   <br>
+    <div style="position:relative;border:thin;height:100px" >
+        <span style="position:absolute; bottom:0">
+            <input type="submit" value="Update" />
+            <button type="submit" formaction="/taskgui/note/delete/{{ note.id }}" method="get">Delete</button>
+        </span>
+    </div>
+
+</form>
+
+
+
+   <link rel="stylesheet" href="{% static "taskgui/simplemde.min.css" %}">
+    <script>
+        new SimpleMDE({
+                element: document.getElementById("id_text"),
+        });
+    </script>
+
