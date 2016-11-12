@@ -42,14 +42,6 @@
     </div>
     {% endif %}
 
-
-    <!-- Context -->
-    <div class="fieldWrapper">
-        {{ form.context.errors }}
-        <label for="id_context">Context:</label> 
-        {{ form.context }}
-    </div>
-
     <!-- Owner -->
     <div class="fieldWrapper">
         {{ form.owner.errors }}
@@ -72,13 +64,39 @@
         {{ form.ttype }}
     </div>
 
-
-    <!-- Role -->
+ 
+    <!-- Working Dept -->
     <div class="fieldWrapper">
-        {{ form.role.errors }}
-        <label for="id_role">Role:</label> 
-        {{ form.role }}
+        {{ form.w_dept.errors }}
+        <label for="id_w_dept">Working Department:</label> 
+        {{ form.w_dept }}
     </div>
+
+   
+
+    <!-- For Department -->
+    <div class="fieldWrapper">
+        {{ form.for_dept.errors }}
+        <label for="id_for_dept">For Department:</label> 
+        {{ form.for_dept }}
+    </div>
+
+
+    <!-- Location -->
+    <div class="fieldWrapper">
+        {{ form.location.errors }}
+        <label for="id_location">Location:</label> 
+        {{ form.location }}
+    </div>
+
+
+    <!-- Tags -->
+    <div class="fieldWrapper">
+        {{ form.tags.errors }}
+        <label for="id_tags">Tags:</label> 
+        <input id="id_tags" size=50 maxlength="200" name="tags" type="text" value="{{ form.tags.value }}" />
+    </div>
+
 
 
     <!-- Name -->
