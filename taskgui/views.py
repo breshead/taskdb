@@ -13,6 +13,8 @@ from taskgui.models import task
 from taskgui.models import note
 from taskgui.models import status
 from taskgui.models import ttype
+from taskgui.models import location 
+from taskgui.models import department
 from django.db.models import Q
 import sys
 from django.template import RequestContext
@@ -23,7 +25,8 @@ from django.shortcuts import redirect
 
 #@method_decorator(login_required)
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+    #return HttpResponse("Hello, world. You're at the polls index.")
+    return redirect('/taskgui/tasks')
 
 #class ListTaskView(ListView):
 class ListTaskView(TemplateView):
@@ -39,6 +42,13 @@ class ListTaskView(TemplateView):
 
     def types(self):
         return ttype.objects.all()
+
+    def departments(self):
+        return department.objects.all()
+
+    def locations(self):
+        return location.objects.all()
+
 
 
 
@@ -80,6 +90,9 @@ class ListTaskView(TemplateView):
         status_filter = self.request.GET.get('Status', None)
         type_filter = self.request.GET.get('Type', None)
         pri_filter = self.request.GET.get('Priority', None)
+        location_filter = self.request.GET.get('Location', None)
+        w_dept_filter = self.request.GET.get('W_DEPT', None)
+        for_dept_filter = self.request.GET.get('FOR_DEPT', None)
 
 
         if pri_filter == None:
@@ -126,6 +139,18 @@ class ListTaskView(TemplateView):
             my_filter_qs = my_filter_qs & Q(ttype=type_filter)
             print >>sys.stderr, "Using USER FILTER :" + type_filter + ":"
 
+        if location_filter and location_filter != "0":
+            my_filter_qs = my_filter_qs & Q(location=location_filter)
+            print >>sys.stderr, "Using LOCATION FILTER :" + location_filter + ":"
+
+        if w_dept_filter and w_dept_filter != "0":
+            my_filter_qs = my_filter_qs & Q(w_dept=w_dept_filter)
+            print >>sys.stderr, "Using W_DEPT FILTER :" + w_dept_filter + ":"
+
+        if for_dept_filter and for_dept_filter != "0":
+            my_filter_qs = my_filter_qs & Q(for_dept=for_dept_filter)
+            print >>sys.stderr, "Using FOR_DEPT FILTER :" + for_dept_filter + ":"
+
 
         #https://docs.djangoproject.com/en/dev/topics/db/queries/#complex-lookups-with-q-objects 
         tasklist = task.objects.filter(my_filter_qs).order_by('priority')
@@ -137,6 +162,10 @@ class ListTaskView(TemplateView):
         context['type_filter'] = type_filter
         context['pri_filter'] = pri_filter
         context['pri_list'] = range(1,5)
+
+        context['location_filter'] = location_filter
+        context['w_dept_filter'] = w_dept_filter
+        context['for_dept_filter'] = for_dept_filter
 
         return context
 
