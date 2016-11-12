@@ -16,24 +16,15 @@ class status(models.Model):
     def __unicode__(self):
         return self.name
 
-
-class tag(models.Model):
-    id        = models.AutoField(primary_key=True)
-    name      = models.CharField(max_length=20, null=False)
-    description = models.CharField(max_length=100, null=False)
-
-    def __unicode__(self):
-        return self.name
     
-class role(models.Model):
-    id        = models.AutoField(primary_key=True)
+class location(models.Model):
+    id          = models.AutoField(primary_key=True)
     name        = models.CharField(max_length=50, null=False)
-    description = models.CharField(max_length=200, null=False)
 
     def __unicode__(self):
         return self.name
 
-class context(models.Model):
+class department(models.Model):
     id        = models.AutoField(primary_key=True)
     name      = models.CharField(max_length=100, null=False)
 
@@ -49,11 +40,13 @@ class user_pref(models.Model):
 class task(models.Model):
     id        = models.AutoField(primary_key=True)
     parent    = models.ForeignKey('task', on_delete=models.CASCADE, null=True, blank=True)
-    context   = models.ForeignKey('context', on_delete=models.CASCADE, null=True)
+    w_dept    = models.ForeignKey('department', related_name='w_dept', on_delete=models.CASCADE, null=True, blank=True)
+    for_dept  = models.ForeignKey('department', related_name='for_dept', on_delete=models.CASCADE, null=True, blank=True)
+    location  = models.ForeignKey('location', on_delete=models.CASCADE, null=True, blank=True)
+    tags      = models.CharField(max_length=200, null=False, blank=True)
     owner     = models.ForeignKey(User, on_delete=models.CASCADE)
     requested_by = models.ForeignKey(User, related_name='requested_by', on_delete=models.CASCADE , null=True, blank=True)
     ttype     = models.ForeignKey('ttype', on_delete=models.CASCADE)
-    role      = models.ForeignKey('role', on_delete=models.CASCADE, null=True, blank=True)
     name      = models.CharField(max_length=100, null=False)
     created   = models.DateTimeField(null=False)
     due       = models.DateTimeField(null=True, blank=True)
@@ -73,7 +66,6 @@ class task(models.Model):
 
     def get_absolute_url(self):
         return "/taskgui/task/%s" % self.id
-
 
 
 class note(models.Model):
@@ -97,16 +89,6 @@ class note(models.Model):
 
 
 
-
-class comment(models.Model):
-    id       = models.AutoField(primary_key=True)
-    note     = models.ForeignKey('note', on_delete=models.CASCADE, null=True)
-    stamp    = models.DateTimeField(null=False)
-    user     = models.ForeignKey(User, on_delete=models.CASCADE)
-    text     = models.TextField(null=True)
-
-    def __unicode__(self):
-        return self.text
 
 
 class checkup(models.Model):
