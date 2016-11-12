@@ -3,7 +3,46 @@
  
     <!-- Form to select which task data will show in the list -->
     <form action="tasks" method="get">
+        <table> 
+            <tr>
+                <th>
+                    USER
+                </th>
 
+                <th>
+                    TYPE
+                </th>
+
+                <th>
+                    STATUS
+                </th>
+
+                <th>
+                    PRI
+                </th>
+
+                <th>
+                    WDEPT
+                </th>
+
+                <th>
+                    FORDEPT
+                </th>
+                <th>
+                    Location 
+                </th>
+
+                <th>
+                    Search
+                </th>
+
+                <th>
+                    New
+                </th>
+
+            </tr>
+        <tr>
+        <td>
         <!-- USER combobox list -->
         <select onchange="this.form.submit()" name="User">
         <option value="0" {% if user_filter == "0" %}  selected {% endif %}> All </option>
@@ -11,9 +50,11 @@
         <option value="{{ u.id }}" {% if user_filter == u.id|stringformat:"s" %} selected {% endif %}> {{ u.username }} </option>
         {% endfor %}
         </select>
+        </td>
 
 
 
+        <td>
         <!-- TYPE combobox list -->
         <select onchange="this.form.submit()"  name="Type">
         <option value="0" {% if status_filter == "0" %}  selected {% endif %}> All </option>
@@ -21,9 +62,11 @@
         <option value="{{ t.id }}" {% if type_filter == t.id|stringformat:"s" %} selected {% endif %}> {{ t.name }} </option>
         {% endfor %}
         </select>
+        </td>
 
 
 
+        <td>
         <!-- STATUS combobox list -->
         <select onchange="this.form.submit()"  name="Status">
         <option value="0" {% if status_filter == "0" %}  selected {% endif %}> All </option>
@@ -32,8 +75,10 @@
         <option value="{{ s.id }}" {% if status_filter == s.id|stringformat:"s" %} selected {% endif %}> {{ s.name }} </option>
         {% endfor %}
         </select>
+        </td>
 
 
+        <td>
         <!-- PRIORITY combobox list -->
         <select onchange="this.form.submit()"  name="Priority">
         <option value="0" {% if pri_filter == "0" %}  selected {% endif %}> All </option>
@@ -41,13 +86,53 @@
         <option value="{{ p }}" {% if pri_filter == p|stringformat:"s" %} selected {% endif %}> {{ p }} </option>
         {% endfor %}
         </select>
+        </td>
+
+        <td>
+        <!-- WORKING DEPT combobox list -->
+        <select onchange="this.form.submit()"  name="W_DEPT">
+        <option value="0" {% if w_dept_filter == "0" %}  selected {% endif %}> All </option>
+        {% for t in view.departments %}
+        <option value="{{ t.id }}" {% if w_dept_filter == t.id|stringformat:"s" %} selected {% endif %}> {{ t.name }} </option>
+        {% endfor %}
+        </select>
+        </td>
+
+
+        <td>
+        <!-- FOR DEPT combobox list -->
+        <select onchange="this.form.submit()"  name="FOR_DEPT">
+        <option value="0" {% if for_dept_filter == "0" %}  selected {% endif %}> All </option>
+        {% for t in view.departments %}
+        <option value="{{ t.id }}" {% if for_dept_filter == t.id|stringformat:"s" %} selected {% endif %}> {{ t.name }} </option>
+        {% endfor %}
+        </select>
+        </td>
+
+
+        <td>
+        <!-- LOCATION combobox list -->
+        <select onchange="this.form.submit()"  name="Location">
+        <option value="0" {% if location_filter == "0" %}  selected {% endif %}> All </option>
+        {% for t in view.locations %}
+        <option value="{{ t.id }}" {% if location_filter == t.id|stringformat:"s" %} selected {% endif %}> {{ t.name }} </option>
+        {% endfor %}
+        </select>
+        </td>
 
 
 
+
+        <td>
         <!--<input type="submit" value="Submit">-->
         <button type="submit" formaction="/taskgui/search" method="get">ElasticSearch</button>
+        </td>
+
+        <td>
         <button type="submit" formaction="/taskgui/task/new" method="get">New Task</button>
+        </td>
     
+    </tr>
     </form>
 
 
