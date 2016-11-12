@@ -26,10 +26,19 @@ INSERT INTO "taskgui_tag" VALUES(3,'Legal','Relates to legal work or documentati
 INSERT INTO "taskgui_tag" VALUES(4,'Network','Releates to the physical farm network');
 
 
-INSERT INTO "taskgui_context" VALUES(1,'Office');
-INSERT INTO "taskgui_context" VALUES(2,'Still');
-INSERT INTO "taskgui_context" VALUES(3,'Home');
-INSERT INTO "taskgui_context" VALUES(4,'Phone');
-INSERT INTO "taskgui_context" VALUES(5,'In Town');
+INSERT INTO "taskgui_department" VALUES(1,'QC');
+INSERT INTO "taskgui_department" VALUES(2,'Irrigation');
+INSERT INTO "taskgui_department" VALUES(3,'IT');
+INSERT INTO "taskgui_department" VALUES(4,'Office');
+INSERT INTO "taskgui_department" VALUES(5,'Still');
+INSERT INTO "taskgui_department" VALUES(6,'Shop');
+INSERT INTO "taskgui_department" VALUES(7,'FarmOps');
+INSERT INTO "taskgui_department" VALUES(8,'Security');
+
+INSERT INTO "taskgui_location" VALUES(1,'Hermiston');
+INSERT INTO "taskgui_location" VALUES(2,'Boardman');
+INSERT INTO "taskgui_location" VALUES(3,'Wapato');
+INSERT INTO "taskgui_location" VALUES(4,'Bouchey');
+INSERT INTO "taskgui_location" VALUES(5,'Royal City');
 
 COMMIT;
