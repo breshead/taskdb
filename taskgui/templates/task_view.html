@@ -36,6 +36,11 @@
 	        font-size: 90%;
         }
 
+        .overview {
+            width: 800px;
+            word-wrap: break-word;
+        }
+
 
 
     </style>
@@ -86,17 +91,64 @@ Due      : {{ task.due }}
 <br>
 Parent   : <a href="/taskgui/task/{{ task.parent_id }}">{{ task.parent }}</a>
 
-<h3>Sub Tasks</h3>
+<h3>Incomplete Sub Tasks</h3>
 <div class='subtasks'>
     <ul style="list-style-type:circle">
+
+
+        <table>
         {% for sTask in subtasks %}
-        <!-- <li><a href="/taskgui/task/{{ sTask.id }}">{{ sTask.name }}</a></li>-->
-        <li 
-        {% if sTask.status|stringformat:"s" == "Completed" %}
-        class="task-done"
+        {% if sTask.status|stringformat:"s" != "Completed" %}
+            <tr>
+                <td
+                    {% if sTask.status|stringformat:"s" == "Completed" %}
+                    class="task-done"
+                    {% endif %}
+                    ><a href="/taskgui/task/{{ sTask.id }}">{{ sTask.name }}</a>
+                </td>
+                <td>
+                    {{ sTask.owner }}
+                </td>
+                <td>
+                    {{ sTask.priority}}
+                </td>
+
+            </tr>
         {% endif %}
-        ><a href="/taskgui/task/{{ sTask.id }}">{{ sTask.name }}</a></li>
         {% endfor %}
+        </table>
+
+    </ul>
+</div>
+
+
+<h3>Completed Sub Tasks</h3>
+<div class='subtasks'>
+    <ul style="list-style-type:circle">
+
+
+        <table>
+        {% for sTask in subtasks %}
+        {% if sTask.status|stringformat:"s" == "Completed" %}
+            <tr>
+                <td
+                    {% if sTask.status|stringformat:"s" == "Completed" %}
+                    class="task-done"
+                    {% endif %}
+                    ><a href="/taskgui/task/{{ sTask.id }}">{{ sTask.name }}</a>
+                </td>
+                <td>
+                    {{ sTask.owner }}
+                </td>
+                <td>
+                    {{ sTask.priority}}
+                </td>
+
+            </tr>
+        {% endif %}
+        {% endfor %}
+        </table>
+
     </ul>
 </div>
 

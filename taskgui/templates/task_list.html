@@ -57,7 +57,8 @@
         <td>
         <!-- TYPE combobox list -->
         <select onchange="this.form.submit()"  name="Type">
-        <option value="0" {% if status_filter == "0" %}  selected {% endif %}> All </option>
+        <option value="0" {% if type_filter == "0" %}  selected {% endif %}> All </option>
+        <option value="A" {% if type_filter == "A" %}  selected {% endif %}> *Work </option>
         {% for t in view.types %}
         <option value="{{ t.id }}" {% if type_filter == t.id|stringformat:"s" %} selected {% endif %}> {{ t.name }} </option>
         {% endfor %}
@@ -70,7 +71,8 @@
         <!-- STATUS combobox list -->
         <select onchange="this.form.submit()"  name="Status">
         <option value="0" {% if status_filter == "0" %}  selected {% endif %}> All </option>
-        <option value="A" {% if status_filter == "A" %}  selected {% endif %}> Not Complete </option>
+        <option value="A" {% if status_filter == "A" %}  selected {% endif %}> *Not Complete </option>
+        <option value="B" {% if status_filter == "B" %}  selected {% endif %}> *Active </option>
         {% for s in view.statii %}
         <option value="{{ s.id }}" {% if status_filter == s.id|stringformat:"s" %} selected {% endif %}> {{ s.name }} </option>
         {% endfor %}
@@ -136,6 +138,10 @@
     </form>
 
 
+    {% load sub_tasks %}
+
+
+
     <table>
       <tr>
           <td>ID</td>
@@ -143,7 +149,7 @@
           <td>Status</td>
           <td>Priority</td>
       </tr>  
-    {% for task in task_list %}
+    {% for task in htask_list %}
       <tr>
           <td><a href="/taskgui/task/{{ task.id }}">{{ task.id }}</a></td>
           <td>{{ task.name }}</td>
@@ -158,5 +164,6 @@
           <td>{{ task.status }}</td>
           <td style="padding-left: 20px">{{ task.priority }}</td>
       </tr>
+    {% sub_tasks task 1 %} 
     {% endfor %}
     </table>

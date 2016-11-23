@@ -31,16 +31,13 @@
     {{ form.non_field_errors }}
 
     <!-- Parent Task this note belongs to. -->
-    {% if form.parent.value != None %}
     <div class="fieldWrapper">
         {{ form.parent.errors }}
         <label for="id_parent">Parent:</label> 
-        <input id="id_parent" name="parent" type="hidden" 
+        <input id="id_parent" name="parent"  
             value="{{ form.parent.value }}" />
-        <a href="/taskgui/task/{{ form.parent.value }}"
-            >{{ parentname }}</a>
+        {{ form.parent }}
     </div>
-    {% endif %}
 
     <!-- Owner -->
     <div class="fieldWrapper">

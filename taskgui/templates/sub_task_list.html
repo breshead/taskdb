@@ -1,0 +1,27 @@
+    {% load sub_tasks %}
+        <!--
+      <tr>
+          <td>----</td>
+          <td>----</td>
+          <td>----</td>
+          <td>--{{ indentpx }}--</td>
+      </tr>
+      -->
+      
+      {% for task in tasks %}
+      <tr>
+          <td><a href="/taskgui/task/{{ task.id }}">{{ task.id }}</a></td>
+          <td style="padding-left: {{ indentpx }}px">{{ task.name }}</td>
+          <!--<td>{{ task.parent }}</td>-->
+          <!--<td>{{ task.context }}</td>
+          <td>{{ task.owner }}</td>
+          <td>{{ task.ttype }}</td>
+          <td>{{ task.created }}</td>
+          <!--<td>{{ task.due }}</td>
+          <!--<td>{{ task.completed }}</td>
+          <!--<td>{{ task.storage }}</td>-->
+          <td>{{ task.status }}</td>
+          <td style="padding-left: 20px">{{ task.priority }}</td>
+      </tr>
+    {% sub_tasks task indent %} 
+    {% endfor %}

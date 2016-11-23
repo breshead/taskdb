@@ -71,7 +71,7 @@ class ListTaskView(TemplateView):
 
         if user_filter != "0":
             my_filter_qs = my_filter_qs & Q(owner=user_filter)
-            print >>sys.stderr, "Using USER FILTER :" + user_filter + ":"
+            print >>sys.stderr, "XUsing USER FILTER :" + user_filter + ":"
 
 
         #print >>sys.stderr, "IN tasklist :" + f + ":"
@@ -82,7 +82,26 @@ class ListTaskView(TemplateView):
         return tasklist
 
         
-    
+    def get_parent_tree(self, task):
+
+        print >>sys.stderr, "in get_parent_tree :" + str(task.id) + ":"
+        parent = task.parent
+        print >>sys.stderr, "Setting Parent to ID:" + str(parent.id) + ":"
+        parents = [parent]
+        print >>sys.stderr, "Setting Parents Array to Size:" + str(len(parents)) + ":"
+        
+        while parent.parent != None:
+            parents.append(parent.parent)
+            parent = parent.parent
+        
+        print >>sys.stderr, "After looping Array Size is:" + str(len(parents)) + ":"
+        print >>sys.stderr, parents
+
+        parents.reverse()
+        print >>sys.stderr, parents
+        #print >>sys.stderr, "After Reversing Array Size is:" + str(len(parents)) + ":"
+        return parents
+
 
     def get_context_data(self, **kwargs):
         context = super(ListTaskView, self).get_context_data(**kwargs)
@@ -101,7 +120,7 @@ class ListTaskView(TemplateView):
 
 
         if type_filter == None:
-            type_filter = "1"
+            type_filter = "A"
             print >>sys.stderr, "Using DEF TYPE FILTER :" + type_filter + ":"
 
         # If there is no selections then grab the user ID and set that to be a filter.
@@ -126,8 +145,15 @@ class ListTaskView(TemplateView):
 
         if status_filter == "A":
             my_filter_qs = my_filter_qs & ~Q(status="4") &  ~Q(status="5")
+            print >>sys.stderr, "Using STATUS FILTER :" + status_filter + ":"
 
-        if status_filter != "0" and status_filter != "A":
+
+        if status_filter == "B":
+            my_filter_qs = my_filter_qs & (Q(status="1") |  Q(status="2"))
+            print >>sys.stderr, "Using STATUS FILTER :" + status_filter + ":"
+
+
+        if status_filter != "0" and status_filter != "A" and status_filter != "B":
             my_filter_qs = my_filter_qs & Q(status=status_filter)
             print >>sys.stderr, "Using STATUS FILTER :" + status_filter + ":"
 
@@ -135,9 +161,13 @@ class ListTaskView(TemplateView):
             my_filter_qs = my_filter_qs & Q(owner=user_filter)
             print >>sys.stderr, "Using USER FILTER :" + user_filter + ":"
 
-        if type_filter and type_filter != "0":
+        if type_filter == "A" :
+            my_filter_qs = my_filter_qs & ~Q(ttype="5")
+            print >>sys.stderr, "Using TYPE FILTER :" + type_filter + ":"
+
+        if type_filter and type_filter != "0" and type_filter != "A" :
             my_filter_qs = my_filter_qs & Q(ttype=type_filter)
-            print >>sys.stderr, "Using USER FILTER :" + type_filter + ":"
+            print >>sys.stderr, "Using TYPE FILTER :" + type_filter + ":"
 
         if location_filter and location_filter != "0":
             my_filter_qs = my_filter_qs & Q(location=location_filter)
@@ -154,6 +184,90 @@ class ListTaskView(TemplateView):
 
         #https://docs.djangoproject.com/en/dev/topics/db/queries/#complex-lookups-with-q-objects 
         tasklist = task.objects.filter(my_filter_qs).order_by('priority')
+
+
+        #####################################################################
+        # Testing hierarchical tasks..
+        task_list_cache = []
+        htasklist = []
+        for tsk in tasklist:
+            print >>sys.stderr, "Looping over LIST :" + str(tsk.id) + ":"
+            try:
+                b=task_list_cache.index(tsk.id)
+            except ValueError:
+                task_list_cache.append(tsk.id)
+                print >>sys.stderr, "Try Failed :" + str(tsk.id) + ":"
+            else:
+                print >>sys.stderr, "Try Succeeded :" + str(tsk.id) + ":"
+                continue 
+
+            if tsk.parent == None:
+                htasklist.append(tsk)
+                print >>sys.stderr, "No Parent :" + str(tsk.id) + ":"
+
+            else:
+                # Get list of parents to the top level parent.
+                plist = self.get_parent_tree(tsk)
+                print >>sys.stderr, "Found Parent List :" + str(tsk.id) + ":"
+                ptr = None
+
+                if plist == None:
+                    print >>sys.stderr, "Parent List is Empty ::"
+
+                else:
+                    ptr = None
+                    #plist.ugly()
+                    print >>sys.stderr, "Parent List is NOT Empty:" + str(tsk.id) + ":"
+
+
+                    for p in plist:
+                        try:
+                            pt=task_list_cache.index(p.id)
+                            
+                        except ValueError:
+                            print >>sys.stderr, "plist TRY Failed:" + str(p.id) + ":"
+                            task_list_cache.append(p.id)
+                            print >>sys.stderr, "ADDING to LIST :" + str(p.id) + ":"
+
+                            if ptr != None:
+                                if not hasattr(ptr, 'children'):
+                                    ptr.children = []
+                                ptr.children.append(p)
+                            else:
+                                htasklist.append(p)
+
+                            ptr = p
+                        else:
+                            print >>sys.stderr, "Already in LIST :" + str(p.id) + ":"
+                            # The parent task is already in the list
+                            # somewhere.
+                            #ptr = pt
+                            # Let's try and fake it and see if python will
+                            # fill in the blanks...
+
+                            if ptr == None:
+                                # We are at the top level parent so we can
+                                # find the index into the list easily
+                                # enough.
+                                idx = htasklist.index(p)
+                                ptr = htasklist[idx]
+                            else:
+                                idx = ptr.children.index(p)
+                                ptr = ptr.children[idx]
+
+                    if not hasattr(ptr, 'children'):
+                        ptr.children = []
+                    ptr.children.append(tsk)
+
+
+
+        context['htask_list'] = htasklist
+        # End hierachical task test.
+        #####################################################################
+
+
+
+            
 
         # Populate the context with our custom data.
         context['task_list'] = tasklist
@@ -194,7 +308,7 @@ class TaskView(TemplateView):
         context['task'] = task.objects.get(pk=taskid)
         context['notes'] = note.objects.filter(task_id=taskid,
                 parent_id=None).order_by('-stamp')
-        context['subtasks'] = task.objects.filter(parent_id=taskid).order_by('created')
+        context['subtasks'] = task.objects.filter(parent_id=taskid).order_by('priority')
         return context
    
 class TaskEdit(UpdateView):
@@ -238,11 +352,17 @@ class TaskNewChild(TemplateView):
         user =  UserMdl.objects.get(pk=userid)
         myTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
-        myTask = task.objects.create(context_id=1, owner_id=user.id,
+        pTask = task.objects.get(pk=pTaskid)
+
+
+        myTask = task.objects.create(owner_id=user.id,
                 requested_by_id=user.id,
                 name='Name Here', created=myTime, due=myTime,
                 ttype_id = 1, overview='Overview Here', status_id=1, 
-                priority=1, parent_id=pTaskid)
+                priority=1, parent_id=pTaskid, w_dept_id =
+                pTask.w_dept_id, for_dept_id=pTask.for_dept_id,
+                location_id=pTask.location_id)
+
         myID = myTask.id
         return redirect('/taskgui/task_edit/' + str(myTask.id))
 
@@ -257,7 +377,7 @@ class TaskNew(TemplateView):
         user =  UserMdl.objects.get(pk=userid)
         myTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
-        myTask = task.objects.create(context_id=1, owner_id=user.id,
+        myTask = task.objects.create( owner_id=user.id,
                 requested_by_id=user.id,
                 name='Name Here', created=myTime, due=myTime,
                 ttype_id = 1, overview='Overview Here', status_id=1, priority=1)

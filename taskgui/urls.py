@@ -4,7 +4,6 @@ from django.conf.urls import include
 from . import views
 
 urlpatterns = [
-    url(r'^/$', views.index, name='index'),
     url(r'^$', views.index, name='index'),
     url(r'^tasks$', login_required(views.ListTaskView.as_view()), name='task-list'),
     url(r'^task/(?P<pk>[0-9]+)$', views.TaskView.as_view(), name='task-view'),

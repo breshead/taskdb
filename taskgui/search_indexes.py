@@ -17,6 +17,11 @@ class TaskIndex(indexes.SearchIndex, indexes.Indexable):
     status    = indexes.CharField(model_attr='status', null=True)
     priority  = indexes.IntegerField(model_attr='priority', null=True)
 
+    w_dept    = indexes.CharField(model_attr='department', null=True)
+    for_dept  = indexes.CharField(model_attr='department', null=True)
+    location  = indexes.CharField(model_attr='location', null=True)
+    tags      = indexes.CharField(model_attr='tags', null=True)
+ 
     def get_model(self):
         return task
 
